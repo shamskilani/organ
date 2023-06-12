@@ -10,7 +10,7 @@ class Organ {
   
     purchase(cash) {
         let purchasedQuantity=Math.floor(cash / this.price);
-        if (Number.isInteger(purchasedQuantity)){
+        if (Number.isInteger(purchasedQuantity) && purchasedQuantity>0){
             return purchasedQuantity;
         }
         else{
@@ -67,6 +67,9 @@ function processOrder(order) {
     // Calculate the bonus quantities based on the purchased quantity and bonus ratio
     let bonusOrgans = {};
     let bonusQuantity= Math.floor(purchasedQuantity/bonus_ratio);
+    if(!Number.isInteger(bonusQuantity) || bonusQuantity<0){
+       bonusQuantity=0;
+    }
     switch (organ.toLowerCase()) {
       case 'heart':      
           purchasedQuantity=bonusQuantity+purchasedQuantity;

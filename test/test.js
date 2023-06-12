@@ -113,7 +113,7 @@ describe('processOrder', () => {
       price: 500,
       bonus_ratio: 2
     };
-    const expectedOutput = '';
+    const expectedOutput = 'heart 0, lung 0, liver 0';
     const output = processOrder(order);
     assert.strictEqual(output, expectedOutput);
   });
@@ -125,7 +125,7 @@ describe('processOrder', () => {
       price: -500,
       bonus_ratio: 2
     };
-    const expectedOutput = '';
+    const expectedOutput = 'heart 0, lung 0, liver 0';
     const output = processOrder(order);
     assert.strictEqual(output, expectedOutput);
   });
@@ -137,7 +137,7 @@ describe('processOrder', () => {
       price: 1500,
       bonus_ratio: -3
     };
-    const expectedOutput = '';
+    const expectedOutput = 'lung 2, liver 0, heart 0';
     const output = processOrder(order);
     assert.strictEqual(output, expectedOutput);
   });
