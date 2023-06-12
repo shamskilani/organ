@@ -9,6 +9,7 @@
   "author": "Ebrahim Shamskilani",
   "license": "ISC",
   "dependencies": {
-    "csv-parser": "^3.0.0"
+    "csv-parser": "^3.0.0",
+    "mocha": "^10.2.0"
   }
 }
