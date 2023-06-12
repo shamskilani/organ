@@ -32,6 +32,21 @@ class Organ {
     }
   }
   
+  // Organ Factory
+class OrganFactory {
+    static createOrgan(type, price) {
+      switch (type.toLowerCase()) {
+        case 'heart':
+          return new Heart(price);
+        case 'liver':
+          return new Liver(price);
+        case 'lung':
+          return new Lung(price);
+        default:
+          throw new Error(`Invalid organ type: ${type}`);
+      }
+    }
+  }
 
 // Function to process the orders from a CSV file
 function processOrdersFromFile(filePath) {
