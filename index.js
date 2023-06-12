@@ -48,6 +48,49 @@ class OrganFactory {
     }
   }
 
+// Function to process a single order
+function processOrder(order) {
+    const { organ, cash, price, bonus_ratio } = order;
+  
+    // Create the organ instance using the factory
+    const organInstance = OrganFactory.createOrgan(organ, price);
+  
+    // Purchase organs based on the available cash
+    const purchasedQuantity = organInstance.purchase(cash);
+  
+    // Calculate the bonus quantities based on the purchased quantity and bonus ratio
+    let bonusOrgans = {};
+    switch (organ.toLowerCase()) {
+      case 'heart':
+        if (purchasedQuantity >= 3) {
+          bonusOrgans['heart'] = 1;
+        }
+        break;
+      case 'liver':
+        if (purchasedQuantity >= 2) {
+          bonusOrgans['lung'] = 1;
+        }
+        break;
+      case 'lung':
+        if (purchasedQuantity >= 4) {
+          bonusOrgans['liver'] = 1;
+          bonusOrgans['heart'] = 1;
+        }
+        break;
+      default:
+        break;
+    }
+  
+    // Generate the output string
+    let output = `${organ} ${purchasedQuantity}`;
+    for (const bonusOrgan in bonusOrgans) {
+      output += `, ${bonusOrgan} ${bonusOrgans[bonusOrgan]}`;
+    }
+  
+    return output;
+  }
+  
+
 // Function to process the orders from a CSV file
 function processOrdersFromFile(filePath) {
     const orders = [];
@@ -61,7 +104,8 @@ function processOrdersFromFile(filePath) {
       .on('end', () => {
         // Process each order and generate the output
         orders.forEach((order) => {
-          console.log(order.organ);
+            const output = processOrder(order);
+            console.log(output);
         });
       });
   }
