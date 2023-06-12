@@ -56,26 +56,28 @@ function processOrder(order) {
     const organInstance = OrganFactory.createOrgan(organ, price);
   
     // Purchase organs based on the available cash
-    const purchasedQuantity = organInstance.purchase(cash);
+    let purchasedQuantity = organInstance.purchase(cash);
   
     // Calculate the bonus quantities based on the purchased quantity and bonus ratio
     let bonusOrgans = {};
+    let bonusQuantity=purchasedQuantity/bonus_ratio;
     switch (organ.toLowerCase()) {
-      case 'heart':
-        if (purchasedQuantity >= 3) {
-          bonusOrgans['heart'] = 1;
-        }
+      case 'heart':      
+          purchasedQuantity=bonusQuantity+purchasedQuantity;
+          bonusOrgans['lung'] = 0;
+          bonusOrgans['liver'] = 0;      
         break;
       case 'liver':
-        if (purchasedQuantity >= 2) {
-          bonusOrgans['lung'] = 1;
-        }
+        
+          bonusOrgans['lung'] = bonusQuantity;
+          bonusOrgans['heart'] = 0;
+        
         break;
       case 'lung':
-        if (purchasedQuantity >= 4) {
-          bonusOrgans['liver'] = 1;
-          bonusOrgans['heart'] = 1;
-        }
+       
+          bonusOrgans['liver'] = bonusQuantity;
+          bonusOrgans['heart'] = bonusQuantity;
+       
         break;
       default:
         break;
