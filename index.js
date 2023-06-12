@@ -9,7 +9,13 @@ class Organ {
     }
   
     purchase(cash) {
-      return Math.floor(cash / this.price);
+        let purchasedQuantity=Math.floor(cash / this.price);
+        if (Number.isInteger(purchasedQuantity)){
+            return purchasedQuantity;
+        }
+        else{
+            return 0;
+        }
     }
   }
   
@@ -60,7 +66,7 @@ function processOrder(order) {
   
     // Calculate the bonus quantities based on the purchased quantity and bonus ratio
     let bonusOrgans = {};
-    let bonusQuantity=purchasedQuantity/bonus_ratio;
+    let bonusQuantity= Math.floor(purchasedQuantity/bonus_ratio);
     switch (organ.toLowerCase()) {
       case 'heart':      
           purchasedQuantity=bonusQuantity+purchasedQuantity;
@@ -114,3 +120,13 @@ function processOrdersFromFile(filePath) {
   
   // Process orders from the provided CSV file
   processOrdersFromFile('orders_example.csv');
+
+  module.exports = {
+    Organ,
+    OrganFactory,
+    Heart,
+    Liver,
+    Lung,
+    processOrder,
+    processOrdersFromFile
+  };

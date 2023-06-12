@@ -4,7 +4,7 @@
   "description": "The provided code is a Node.js application that processes customer orders for lab-grown replacement organs. It reads orders from a CSV file and calculates the number of organs the customer is eligible to receive based on the purchase amount and bonus ratio. The code follows an object-oriented approach and utilizes the Factory Design Pattern to create organ instances. The output is generated in the specified CSV format, showing the quantity of purchased and bonus organs for each order.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/test.js"
   },
   "author": "Ebrahim Shamskilani",
   "license": "ISC",
