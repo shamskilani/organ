@@ -59,77 +59,86 @@ function processOrder(order) {
     const { organ, cash, price, bonus_ratio } = order;
   
     // Create the organ instance using the factory
-    const organInstance = OrganFactory.createOrgan(organ, price);
+    try{
+        const organInstance = OrganFactory.createOrgan(organ, price);
+    
   
-    // Purchase organs based on the available cash
-    let purchasedQuantity = organInstance.purchase(cash);
-  
-    // Calculate the bonus quantities based on the purchased quantity and bonus ratio
-    let bonusOrgans = {};
-    let bonusQuantity= Math.floor(purchasedQuantity/bonus_ratio);
-    if(!Number.isInteger(bonusQuantity) || bonusQuantity<0){
-       bonusQuantity=0;
-    }
-    switch (organ.toLowerCase()) {
-      case 'heart':      
-          purchasedQuantity=bonusQuantity+purchasedQuantity;
-          bonusOrgans['lung'] = 0;
-          bonusOrgans['liver'] = 0;      
-        break;
-      case 'liver':
+        // Purchase organs based on the available cash
+        let purchasedQuantity = organInstance.purchase(cash);
+    
+        // Calculate the bonus quantities based on the purchased quantity and bonus ratio
+        let bonusOrgans = {};
+        let bonusQuantity= Math.floor(purchasedQuantity/bonus_ratio);
+        if(!Number.isInteger(bonusQuantity) || bonusQuantity<0){
+        bonusQuantity=0;
+        }
+        switch (organ.toLowerCase()) {
+        case 'heart':      
+            purchasedQuantity=bonusQuantity+purchasedQuantity;
+            bonusOrgans['lung'] = 0;
+            bonusOrgans['liver'] = 0;      
+            break;
+        case 'liver':
+            
+            bonusOrgans['lung'] = bonusQuantity;
+            bonusOrgans['heart'] = 0;
+            
+            break;
+        case 'lung':
         
-          bonusOrgans['lung'] = bonusQuantity;
-          bonusOrgans['heart'] = 0;
+            bonusOrgans['liver'] = bonusQuantity;
+            bonusOrgans['heart'] = bonusQuantity;
         
-        break;
-      case 'lung':
-       
-          bonusOrgans['liver'] = bonusQuantity;
-          bonusOrgans['heart'] = bonusQuantity;
-       
-        break;
-      default:
-        break;
+            break;
+        default:
+            break;
+        }
+    
+        // Generate the output string
+        let output = `${organ} ${purchasedQuantity}`;
+        for (const bonusOrgan in bonusOrgans) {
+        output += `, ${bonusOrgan} ${bonusOrgans[bonusOrgan]}`;
+        }
+        return output;
     }
-  
-    // Generate the output string
-    let output = `${organ} ${purchasedQuantity}`;
-    for (const bonusOrgan in bonusOrgans) {
-      output += `, ${bonusOrgan} ${bonusOrgans[bonusOrgan]}`;
+    
+    catch{
+        return "invalid organ type";
     }
-  
-    return output;
   }
   
 
 // Function to process the orders from a CSV file
 function processOrdersFromFile(filePath) {
     const orders = [];
+    let output="File not found"
+    const readStream = fs.createReadStream(filePath);
   
-    // Read the CSV file and process each order
-    fs.createReadStream(filePath)
+    readStream
+      .on('error', (error) => {
+        console.error("File not found");
+      })
       .pipe(csv())
       .on('data', (data) => {
+        const keys = Object.keys(data);
         orders.push(data);
       })
       .on('end', () => {
         // Process each order and generate the output
         orders.forEach((order) => {
-            const output = processOrder(order);
-            console.log(output);
+          output = processOrder(order);
+          console.log(output);
         });
       });
+      return output;
   }
-  
+    
   // Process orders from the provided CSV file
   processOrdersFromFile('orders_example.csv');
 
   module.exports = {
     Organ,
     OrganFactory,
-    Heart,
-    Liver,
-    Lung,
     processOrder,
     processOrdersFromFile
   };
